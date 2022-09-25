@@ -2,7 +2,6 @@ import random
 import copy
 import time
 from matplotlib import pyplot as plt
-import numpy as np
 
 #Função Calcular Distância
 def calcDist(ponto1, ponto2):
