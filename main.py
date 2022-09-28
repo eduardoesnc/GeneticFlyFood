@@ -19,7 +19,7 @@ def getDist(i, j, matriz):
 def primeiraPop(matriz, n):
     pop = []
     m = len(matriz)
-    for i in range(n):
+    for i in range(n//2):
         pop.append(random.sample(range(0, m), n))
     return pop
 
@@ -146,11 +146,12 @@ def evolucao(listEntrada, qtdGen):
         # elif min(menorFits) == menorCaminho:
         #     count += 1
         # if count >= 200:
+        #     qtdGen = i
         #     break
-        print("geração", i,":", round(menorCaminho, 3)," média:", round(mediaFits[i], 3))
+        print("geração", i,":", round(menorFits[i], 3)," média:", round(mediaFits[i], 3))
     # plt.figure()
-    # plt.plot(range(gen), mediaFits, label='Caminho médio')
-    # plt.plot(range(gen), menorFits, label='Caminho mínimo')
+    # plt.plot(range(qtdGen), mediaFits, label='Caminho médio')
+    # plt.plot(range(qtdGen), menorFits, label='Caminho mínimo')
     # plt.legend()
     # plt.ylabel('Distância')
     # plt.xlabel('Gerações')
