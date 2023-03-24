@@ -46,7 +46,8 @@ def selecao(fits):
     pais = []
     size = int(len(fits) / 1.25)
     # ordFit = sorted(range(len(fits)), key=lambda k: fits[k], reverse=False)
-    # pais.append(ordFit[0])
+    # for i in range(10):
+    #     pais.append(ordFit[i])
     for i in range(size):
         idx_candidato1 = random.randint(0, (len(fits) // 5) - 1)
         idx_candidato2 = random.randint(0, (len(fits) // 5) - 1)
@@ -86,6 +87,11 @@ def mutacao(cromossomo):
     cromossomo[i:j+1] = reversed(cromossomo[i:j+1])
     return cromossomo
 
+def mutacaoOnePoint(cromossomo):
+    i, j = sorted(random.sample(range(len(cromossomo)), 2))
+    cromossomo[i], cromossomo[j] = cromossomo[j], cromossomo[i]
+    return cromossomo
+
 
 def elitismo(pop, listfit, qtd):
     newpop = []
@@ -108,8 +114,12 @@ def geraNewPop(pop, matriz, tMutacao, usarElitismo):
         else:
             newPop.append(crossover(pop[aux], pop[aux + 1]))
 
-        if random.uniform(0, 100) <= tMutacao:
-                newPop[i] = mutacao(newPop[i])
+        if tMutacao < 50:
+            if random.uniform(0, 100) <= tMutacao:
+                    newPop[i] = mutacao(newPop[i])
+        else:
+            if random.uniform(0, 100) <= tMutacao:
+                    newPop[i] = mutacaoOnePoint(newPop[i])
         i += 1
     if usarElitismo == True:
         for c in range(len(pop)):
@@ -124,7 +134,7 @@ def evolucao(listEntrada, qtdGen):
     qtdGen += 1
     # matrizDists = setDist(listEntrada)
     matrizDists = listEntrada
-    pop = primeiraPop(matrizDists, 100, listEntrada)
+    pop = primeiraPop(matrizDists, 500, listEntrada)
     listFit = fitness(pop, matrizDists)
     ordFits = selecao(pop)
     menorCaminho = listFit[ordFits[0]]
