@@ -1,12 +1,9 @@
-# Diminuir quantidade de indivíduos e aumentar quantidade de gerações
-#
-
 import random
 import copy
 import time
-# from matplotlib import pyplot as plt
+from matplotlib import pyplot as plt
 
-random.seed(56)
+random.seed(82)
 
 #Função Calcular Distância
 def calcDist(ponto1, ponto2):
@@ -45,9 +42,6 @@ def fitness(pop, matriz):
 def selecao(fits):
     pais = []
     size = int(len(fits) / 1.25)
-    # ordFit = sorted(range(len(fits)), key=lambda k: fits[k], reverse=False)
-    # for i in range(10):
-    #     pais.append(ordFit[i])
     for i in range(size):
         idx_candidato1 = random.randint(0, (len(fits) // 5) - 1)
         idx_candidato2 = random.randint(0, (len(fits) // 5) - 1)
@@ -87,10 +81,16 @@ def mutacao(cromossomo):
     cromossomo[i:j+1] = reversed(cromossomo[i:j+1])
     return cromossomo
 
-def mutacaoOnePoint(cromossomo):
-    i, j = sorted(random.sample(range(len(cromossomo)), 2))
-    cromossomo[i], cromossomo[j] = cromossomo[j], cromossomo[i]
-    return cromossomo
+# def mutacaoOnePoint(cromossomo):
+#     i, j = sorted(random.sample(range(len(cromossomo)), 2))
+#     cromossomo[i], cromossomo[j] = cromossomo[j], cromossomo[i]
+#     return cromossomo
+
+def mutacao_insercao(individuo):
+    idx1, idx2 = random.sample(range(len(individuo)), 2)
+    elem = individuo.pop(idx1)
+    individuo.insert(idx2, elem)
+    return individuo
 
 
 def elitismo(pop, listfit, qtd):
@@ -114,12 +114,11 @@ def geraNewPop(pop, matriz, tMutacao, usarElitismo):
         else:
             newPop.append(crossover(pop[aux], pop[aux + 1]))
 
-        if tMutacao < 50:
+        if tMutacao < 30:
             if random.uniform(0, 100) <= tMutacao:
                     newPop[i] = mutacao(newPop[i])
         else:
-            if random.uniform(0, 100) <= tMutacao:
-                    newPop[i] = mutacaoOnePoint(newPop[i])
+            newPop[i] = mutacao_insercao(newPop[i])
         i += 1
     if usarElitismo == True:
         for c in range(len(pop)):
@@ -158,19 +157,18 @@ def evolucao(listEntrada, qtdGen):
             count += 1
         else:
             count = 0
-        if count >= 100:
+        if count >= 20:
             count = 0
             taxaMutacao += 5
-            # usarElitismo = False
             print('TAXA MUTAÇÃO: ', taxaMutacao)
-        print("geração", i,":", round(menorFits[i], 3)," média:", round(mediaFits[i], 3))
+        print("geração", i,":", round(menorFits[i])," média:", round(mediaFits[i], 3))
     # plt.figure()
     # plt.plot(range(qtdGen), mediaFits, label='Caminho médio')
     # plt.plot(range(qtdGen), menorFits, label='Caminho mínimo')
     # plt.legend()
     # plt.ylabel('Distância')
     # plt.xlabel('Gerações')
-    # plt.show()
+    # plt.show() 
     melhorCaminho = newPop[ordFits[0]]
     print(melhorCaminho)
 
@@ -221,7 +219,6 @@ if __name__ == "__main__":
 
         # Executar a função de otimização com a matriz de distâncias
         ini = time.time()
-        evolucao(distance_matrix, 10000)
+        evolucao(distance_matrix, 600)
         fim = time.time()
         print("Tempo gasto:", round(fim - ini, 3))
-
